@@ -38,8 +38,9 @@ const romanDigits = {
 };
 
 function checkEntryParams(str) {
-  let lastDigit = undefined;
+  let lastDigit;
   let counter = 0;
+
   for (const digit of str.toUpperCase()) {
     if (!romanDigits.hasOwnProperty(digit)) {
       return false;
@@ -56,7 +57,8 @@ function checkEntryParams(str) {
       counter = 0;
     }
   }
-  return true
+
+  return true;
 }
 
 function fromArabicToRoman(number) {
@@ -88,5 +90,5 @@ function fromRomanToArabic(str) {
     } else {
       return previousValue + firstDigit;
     }
-  }, 0)
+  }, 0);
 }

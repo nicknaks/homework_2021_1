@@ -36,13 +36,17 @@ QUnit.module('Тестируем функцию roman', function () {
 		assert.strictEqual(roman('1904'), 'MCMIV');
 		assert.strictEqual(roman('1990'), 'MCMXC');
 		assert.strictEqual(roman('2017'), 'MMXVII');
+	});
 
+	QUnit.test('roman правильно определяет инвалидные входные параметры', function (assert) {
 		assert.strictEqual(roman('XXXXXX'), null);
 		assert.strictEqual(roman('AXAXAX'), null);
-		assert.strictEqual(roman('AAAA'), null);
-		assert.strictEqual(roman('M2048'), null);
-		assert.strictEqual(roman('M204b'), null);
+		assert.strictEqual(roman('aaaa'), null);
+
 		assert.strictEqual(roman('s'), null);
+		assert.strictEqual(roman('X123'), null);
+		assert.strictEqual(roman('321X'), null);
+
 		assert.strictEqual(roman('NaN'), null);
 		assert.strictEqual(roman('undefined'), null);
 	});
