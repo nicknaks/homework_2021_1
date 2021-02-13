@@ -22,7 +22,7 @@ const ROMAN_DIGITS = {
  * @return {string|null|number} - результат перевода
  */
 const roman = (value) => {
-  if (typeof value === 'number' || Number.isInteger(Number(value))) {
+  if (typeof value === 'number' || Number.isInteger(Number(value)) && value != null) {
     return fromArabicToRoman(value);
   }
 
@@ -33,34 +33,29 @@ const roman = (value) => {
   return null;
 }
 
-
 /**
  * Функция переводит арабские числа в римские
- * @param {number} number
- * @return {string}
+ * @param {number} number - число для перевода в римкую систему счисления
+ * @return {string} - результат перевода
  */
 const fromArabicToRoman = (number) => {
   if (number < 1) {
     return '';
   }
 
-  let result = '';
-
-  Object.entries(ROMAN_DIGITS).reduce((prevValue, [romanDigit, value]) => {
-    while (prevValue >= value) {
+  return Object.entries(ROMAN_DIGITS).reduce((result, [romanDigit, value])=> {
+    while (number >= value) {
       result += romanDigit
-      prevValue -= value
+      number -= value
     }
-    return prevValue
-  }, number);
-
-  return result;
+    return result
+  }, '');
 }
 
 /**
  * Функция переводит римские числа в арабские
- * @param {string} str
- * @return {number}
+ * @param {string} str - строка, состоящая из римских цифр, для перевода в арабские
+ * @return {number} - результат перевода
  */
 const fromRomanToArabic = (str) => {
   return str.toUpperCase().split('').reduce((previousValue, currentItem, index, arr) => {

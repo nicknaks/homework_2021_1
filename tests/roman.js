@@ -49,5 +49,8 @@ QUnit.module('Тестируем функцию roman', function () {
 
 		assert.strictEqual(roman('NaN'), null);
 		assert.strictEqual(roman('undefined'), null);
+		assert.strictEqual(roman(undefined), null);
+		assert.strictEqual(roman(null), null);
+		assert.strictEqual(roman(String()), '');
 	});
 });
