@@ -1,27 +1,6 @@
 'use strict';
 
-/**
- * Функция переводит римские числа в десятичные и обратно (в зависимости от того, что было в функцию передано)
- * @param number - число для перевода в другую систему счисления
- * @return {string|null} - результат перевода
- */
-const roman = (number) => {
-  if (typeof number === 'number' || Number.isInteger(Number(number))) {
-    return fromArabicToRoman(number);
-  }
-
-  if (typeof number === 'string') {
-    if (!checkEntryParams(number)) {
-      return null;
-    }
-
-    return fromRomanToArabic(number);
-  }
-
-  return null;
-}
-
-const romanDigits = {
+const ROMAN_DIGITS = {
   M: 1000,
   CM: 900,
   D: 500,
@@ -37,58 +16,61 @@ const romanDigits = {
   I: 1
 };
 
-function checkEntryParams(str) {
-  let lastDigit;
-  let counter = 0;
-
-  for (const digit of str.toUpperCase()) {
-    if (!romanDigits.hasOwnProperty(digit)) {
-      return false;
-    }
-
-    if (lastDigit === undefined || digit === lastDigit) {
-      counter++
-      lastDigit = digit;
-
-      if (counter > 4) {
-        return false;
-      }
-    } else {
-      counter = 0;
-    }
+/**
+ * Функция проверяет входные параметры и переводит римские числа в десятичные и обратно (в зависимости от того, что было в функцию передано)
+ * @param {string|number} value - число для перевода в другую систему счисления
+ * @return {string|null|number} - результат перевода
+ */
+const roman = (value) => {
+  if (typeof value === 'number' || Number.isInteger(Number(value))) {
+    return fromArabicToRoman(value);
   }
 
-  return true;
+  if (typeof value === 'string' && !(/[^XIVLCDM]/i.test(value) || /\b(.)\1{4,}/i.test(value))) {
+    return fromRomanToArabic(value);
+  }
+
+  return null;
 }
 
-function fromArabicToRoman(number) {
-  if (number < 1) return '';
+
+/**
+ * Функция переводит арабские числа в римские
+ * @param {number} number
+ * @return {string}
+ */
+const fromArabicToRoman = (number) => {
+  if (number < 1) {
+    return '';
+  }
 
   let result = '';
 
-  for (const key in romanDigits) {
-    while (number >= romanDigits[key]) {
-      result += key;
-      number -= romanDigits[key];
+  Object.entries(ROMAN_DIGITS).reduce((prevValue, [romanDigit, value]) => {
+    while (prevValue >= value) {
+      result += romanDigit
+      prevValue -= value
     }
-  }
+    return prevValue
+  }, number);
 
   return result;
 }
 
-function fromRomanToArabic(str) {
-  return str.toUpperCase().split('').reduce(function (previousValue, currentItem, index, arr) {
-    const firstDigit = romanDigits[arr[index]];
-    const secondDigit = romanDigits[arr[index + 1]];
-    const thirdDigit = romanDigits[arr[index + 2]];
+/**
+ * Функция переводит римские числа в арабские
+ * @param {string} str
+ * @return {number}
+ */
+const fromRomanToArabic = (str) => {
+  return str.toUpperCase().split('').reduce((previousValue, currentItem, index, arr) => {
+    const secondDigit = ROMAN_DIGITS[arr[index + 1]];
+    const thirdDigit = ROMAN_DIGITS[arr[index + 2]];
 
-    if (secondDigit && thirdDigit && firstDigit <= secondDigit && secondDigit < thirdDigit)
+    if (secondDigit && thirdDigit && ROMAN_DIGITS[currentItem] <= secondDigit && secondDigit < thirdDigit) {
       return null;
-
-    if (secondDigit > firstDigit) {
-      return previousValue - firstDigit;
-    } else {
-      return previousValue + firstDigit;
     }
+
+    return secondDigit > ROMAN_DIGITS[currentItem] ? previousValue - ROMAN_DIGITS[currentItem] : previousValue + ROMAN_DIGITS[currentItem];
   }, 0);
 }
